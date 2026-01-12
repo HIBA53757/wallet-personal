@@ -51,3 +51,4 @@ CREATE TABLE expense (
     FOREIGN KEY (category_id) REFERENCES category(id)
 );
 --@block
+ALTER TABLE wallet ADD COLUMN monthly_budget DECIMAL(10,2) NOT NULL DEFAULT 0 AFTER budget;

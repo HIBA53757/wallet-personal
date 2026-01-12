@@ -127,7 +127,62 @@ class Wallet
             ':id'     => $wallet['id']
         ]);
     }
-    public function getTotalExpenses($user_id): float
+    
+
+    public function updateMonthlyBudget($user_id, $amount = null)
+    {
+        $month = $this->currentMonth();
+        $year  = $this->currentYear();
+
+        $stmt = $this->db->prepare(
+            "SELECT id, monthly_budget FROM wallet
+         WHERE user_id = :user_id AND month = :month AND year = :year"
+        );
+
+        $stmt->execute([
+            ':user_id' => $user_id,
+            ':month'   => $month,
+            ':year'    => $year
+        ]);
+
+        $wallet = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($amount === null) {
+            return $wallet ? (float)$wallet['monthly_budget'] : 0;
+        }
+
+        if ($wallet) {
+            $update = $this->db->prepare(
+                "UPDATE wallet SET monthly_budget = :budget WHERE id = :id"
+            );
+            return $update->execute([
+                ':budget' => $amount,
+                ':id'     => $wallet['id']
+            ]);
+        } else {
+            $insert = $this->db->prepare(
+                "INSERT INTO wallet (user_id, month, year, budget, monthly_budget)
+             VALUES (:user_id, :month, :year, 0, :budget)"
+            );
+            return $insert->execute([
+                ':user_id' => $user_id,
+                ':month'   => $month,
+                ':year'    => $year,
+                ':budget'  => $amount
+            ]);
+        }
+    }
+    public function getWalletId($user_id): int
+    {
+        $stmt = $this->db->prepare(
+            "SELECT id FROM wallet WHERE user_id = :user_id AND month = MONTH(CURDATE()) AND year = YEAR(CURDATE())"
+        );
+        $stmt->execute([':user_id' => $user_id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? (int)$row['id'] : 0;
+    }
+
+public function getTotalExpenses($user_id): float
     {
         $month = (int) date('n');
         $year  = (int) date('Y');
@@ -150,49 +205,5 @@ class Wallet
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row['total'] ? (float)$row['total'] : 0.0;
     }
-
-    public function updateMonthlyBudget($user_id, $amount = null)
-{
-    $month = $this->currentMonth();
-    $year  = $this->currentYear();
-
-    $stmt = $this->db->prepare(
-        "SELECT id, monthly_budget FROM wallet
-         WHERE user_id = :user_id AND month = :month AND year = :year"
-    );
-
-    $stmt->execute([
-        ':user_id' => $user_id,
-        ':month'   => $month,
-        ':year'    => $year
-    ]);
-
-    $wallet = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($amount === null) {
-        return $wallet ? (float)$wallet['monthly_budget'] : 0;
-    }
-
-    if ($wallet) {
-        $update = $this->db->prepare(
-            "UPDATE wallet SET monthly_budget = :budget WHERE id = :id"
-        );
-        return $update->execute([
-            ':budget' => $amount,
-            ':id'     => $wallet['id']
-        ]);
-    } else {
-        $insert = $this->db->prepare(
-            "INSERT INTO wallet (user_id, month, year, budget, monthly_budget)
-             VALUES (:user_id, :month, :year, 0, :budget)"
-        );
-        return $insert->execute([
-            ':user_id' => $user_id,
-            ':month'   => $month,
-            ':year'    => $year,
-            ':budget'  => $amount
-        ]);
-    }
-}
 
 }

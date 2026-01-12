@@ -1,0 +1,9 @@
+{
+    "name": "pc/personal-wallet",
+    "autoload": {
+        "psr-4": {
+            "personalWallet\\app\\": "app/"
+        }
+    }
+   
+}

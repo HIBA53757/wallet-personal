@@ -19,8 +19,10 @@ class WalletContr
         $totalExpenses  = $this->wallet->getTotalExpenses($user_id);
         $remaining      = $walletBalance - $totalExpenses;
         $monthlyBudget = $this->wallet->updateMonthlyBudget($user_id);
-       $categoryContr = new CategoryContr();
+        $categoryContr = new CategoryContr();
         $categories = $categoryContr->dashboardCategories();
+        $expenseContr = new ExpenseContr();
+        $expenses = $expenseContr->getExpenses($user_id);
         require __DIR__ . '/../views/pages/dashboard.php';
     }
 
