@@ -5,12 +5,8 @@
   <meta charset="UTF-8" />
   <title>Dashboard – Personal Wallet</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 
 <body class="bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-100 min-h-screen p-8">
@@ -23,6 +19,7 @@
       <i class="fa-solid fa-right-from-bracket mr-1"></i> Déconnexion
     </button>
   </header>
+
 
   <section class="grid md:grid-cols-4 gap-6 mb-10">
 
@@ -45,29 +42,24 @@
 
     <div class="bg-white rounded-2xl shadow-lg p-6">
       <p class="text-gray-500">Solde restant</p>
-      <p class="text-2xl font-extrabold text-green-600"><?= number_format($remaining, 2) ?>DH</p>
+      <p class="text-2xl font-extrabold text-green-600"><?= number_format($remaining, 2) ?> DH</p>
     </div>
 
     <div class="bg-white rounded-2xl shadow-lg p-6">
-  <p class="text-gray-500">Budget mensuel</p>
-
-  <p class="text-2xl font-extrabold text-blue-600">
-    <?= number_format($monthlyBudget, 2) ?> DH
-  </p>
-
-  <form method="POST" action="index.php?action=setBudget">
-    <input type="number" min="0" name="budget"
-           placeholder="Mettre à jour budget"
-           class="w-full border rounded-lg p-2 mt-2" />
-    <button class="mt-3 w-full bg-blue-600 text-white rounded-lg py-2">
-      Mettre à jour
-    </button>
-  </form>
-</div>
-
+      <p class="text-gray-500">Budget mensuel</p>
+      <p class="text-2xl font-extrabold text-blue-600"><?= number_format($monthlyBudget, 2) ?> DH</p>
+      <form method="POST" action="index.php?action=setBudget">
+        <input type="number" min="0" name="budget" placeholder="Mettre à jour budget"
+          class="w-full border rounded-lg p-2 mt-2" />
+        <button class="mt-3 w-full bg-blue-600 text-white rounded-lg py-2">
+          Mettre à jour
+        </button>
+      </form>
+    </div>
 
   </section>
 
+  <!-- Categories -->
   <section class="bg-white rounded-2xl shadow-lg p-8 mb-10">
     <h2 class="text-xl font-bold mb-4">
       <i class="fa-solid fa-tags mr-2 text-purple-600"></i>Catégories
@@ -75,41 +67,35 @@
 
     <div class="flex gap-4 mb-4">
       <form method="POST" action="index.php?action=addCategory">
-      <input type="text" name="category_name" placeholder="Nouvelle catégorie"
-        class="border rounded-lg p-2 flex-1" />
-      <button class="bg-purple-600 text-white px-6 rounded-lg">
-        Ajouter
-      </button>
+        <input type="text" name="category_name" placeholder="Nouvelle catégorie" class="border rounded-lg p-2 flex-1" />
+        <button class="bg-purple-600 text-white px-6 rounded-lg">Ajouter</button>
       </form>
     </div>
 
     <div class="flex gap-3 flex-wrap">
-        <?php foreach ($categories as $cat): ?>
-         <span class="px-4 py-1 bg-blue-100 text-blue-600 rounded-full flex items-center gap-1">
-        <?= htmlspecialchars($cat['name']) ?>
-
-        
-    
-      </span>
-    <?php endforeach; ?> 
+      <?php foreach ($categories as $cat): ?>
+        <span class="px-4 py-1 bg-blue-100 text-blue-600 rounded-full flex items-center gap-1">
+          <?= htmlspecialchars($cat['name']) ?>
+        </span>
+      <?php endforeach; ?>
     </div>
   </section>
 
+  <!-- Add Expense -->
   <section class="bg-white rounded-2xl shadow-lg p-8 mb-10">
     <h2 class="text-xl font-bold mb-6">
       <i class="fa-solid fa-plus mr-2 text-blue-600"></i>Ajouter une dépense
     </h2>
 
-    <form class="grid md:grid-cols-4 gap-4">
-      <input type="text" placeholder="Titre" class="border p-3 rounded-lg" />
-      <input type="number" min="0" placeholder="Montant" class="border p-3 rounded-lg" />
-      <input type="date" class="border p-3 rounded-lg" />
-      <select class="border p-3 rounded-lg">
-        <option>Catégorie</option>
-         <?php foreach ($categories as $cat): ?>
-        <option><?= htmlspecialchars($cat['name']) ?></option>
-        
-          <?php endforeach; ?> 
+    <form method="POST" action="index.php?action=addExpense" class="grid md:grid-cols-4 gap-4">
+      <input type="text" name="title" placeholder="Titre" class="border p-3 rounded-lg" required />
+      <input type="number" name="amount" min="0" placeholder="Montant" class="border p-3 rounded-lg" step="0.01" required />
+      <input type="date" name="date" class="border p-3 rounded-lg" required />
+      <select name="category_id" class="border p-3 rounded-lg" required>
+        <option value="">Catégorie</option>
+        <?php foreach ($categories as $cat): ?>
+          <option value="<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
+        <?php endforeach; ?>
       </select>
 
       <div class="md:col-span-4 text-right">
@@ -120,41 +106,8 @@
     </form>
   </section>
 
-  <section class="bg-white rounded-2xl shadow-lg p-8">
-    <h2 class="text-xl font-bold mb-6">
-      <i class="fa-solid fa-list mr-2 text-purple-600"></i>Dépenses du mois
-    </h2>
+ 
 
-    <table class="w-full">
-      <thead class="text-gray-500 border-b">
-        <tr>
-          <th class="py-2 text-left">Deponse</th>
-          <th>Montant</th>
-          <th>Date</th>
-          <th>Catégorie</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="border-b">
-          <td class="py-3">.</td>
-          <td>. DH</td>
-          <td>.</td>
-          <td>
-            <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">
-              .
-            </span>
-          </td>
-          <td>
-            <button class="text-red-500">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
 
 </body>
-
 </html>
