@@ -19,7 +19,7 @@ class AuthContr
             exit();
         }
 
-        $name = trim($_POST['nom']); 
+        $name = trim($_POST['nom']);
         $email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
         $password = $_POST['password'];
         $confirm = $_POST['confirm_password'];
@@ -56,7 +56,7 @@ class AuthContr
                 $_SESSION['user_id'] = $userData['id'];
                 $_SESSION['user_name'] = $userData['nom'];
 
-                header('Location: /personalwallet/app/views/pages/dashboard.php');
+                header('Location: /personalwallet/index.php?action=dashboard');
                 exit();
             } else {
                 $error = "Email ou mot de passe incorrect.";
@@ -69,4 +69,14 @@ class AuthContr
     {
         require_once __DIR__ . '/../views/auth/login.php';
     }
+
+    public function logout()
+{
+    session_start();
+    session_unset();
+    session_destroy();
+
+    header('Location: /personalwallet/index.php?action=login');
+    exit();
+}
 }

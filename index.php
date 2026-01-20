@@ -7,7 +7,7 @@ use personalWallet\app\controllers\WalletContr;
 use personalWallet\app\controllers\CategoryContr;
 use personalWallet\app\controllers\ExpenseContr;
 
-$action = $_GET['action'] ?? 'dashboard';
+$action = $_GET['action'] ?? 'login';
 
 $auth = new AuthContr();
 $walletContr = new WalletContr();
@@ -26,6 +26,10 @@ switch ($action) {
 
     case 'login':
         $auth->showLogin();
+        break;
+        
+    case 'logout':
+        $auth->logout();
         break;
 
     case 'submit-login':
@@ -48,14 +52,14 @@ switch ($action) {
         $walletContr->updateWallet($_SESSION['user_id']);
         break;
 
-        case 'setBudget':
-    if (!isset($_SESSION['user_id'])) {
-        header('Location: index.php?action=login');
-        exit;
-    }
-    $walletContr->setBudget($_SESSION['user_id']);
-      break;
-     case 'addCategory':
+    case 'setBudget':
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+        $walletContr->setBudget($_SESSION['user_id']);
+        break;
+    case 'addCategory':
         if (!isset($_SESSION['user_id'])) {
             header('Location: index.php?action=login');
             exit;
@@ -63,17 +67,21 @@ switch ($action) {
         $categoryContr->addCategory();
         break;
 
-        case 'addExpense':
-    if (!isset($_SESSION['user_id']))
-         { header('Location: index.php?action=login'); exit; }
-    $expenseContr->addExpense($_SESSION['user_id']);
-    break;
+    case 'addExpense':
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+        $expenseContr->addExpense($_SESSION['user_id']);
+        break;
 
-case 'deleteExpense':
-    if (!isset($_SESSION['user_id']))
-         { header('Location: index.php?action=login'); exit; }
-    $expenseContr->deleteExpense();
-    break;
+    case 'deleteExpense':
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: index.php?action=login');
+            exit;
+        }
+        $expenseContr->deleteExpense();
+        break;
 
     default:
         header('Location: index.php?action=dashboard');

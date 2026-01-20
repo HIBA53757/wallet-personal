@@ -52,3 +52,5 @@ CREATE TABLE expense (
 );
 --@block
 ALTER TABLE wallet ADD COLUMN monthly_budget DECIMAL(10,2) NOT NULL DEFAULT 0 AFTER budget;
+
+

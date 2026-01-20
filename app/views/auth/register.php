@@ -65,7 +65,7 @@
         <div class="mt-6 text-center">
             <p class="text-gray-600">
                 Déjà un compte ? 
-                <a href="login.php" class="text-indigo-600 font-semibold hover:text-indigo-700">
+                <a href="/personalwallet/index.php?action=login" class="text-indigo-600 font-semibold hover:text-indigo-700">
                     Se connecter
                 </a>
             </p>
